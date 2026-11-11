@@ -1,0 +1,4 @@
+source: https://github.com/databricks-industry-solutions/funke-hl7v2
+commit: ce223a323023bcf329ef4d4559b3c38bdbadc10f
+pinned_at: 2026-11-05
+notes: Vendored for Aprentis synthetic ADT. Catalog default retargeted to aprentis_dev_synthetic.

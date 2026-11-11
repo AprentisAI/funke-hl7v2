@@ -20,10 +20,10 @@ presets:
 
 variables:
   catalog:
-    description: This is the catalog that you want to deploy the accelerator resources to
-    default: main
+    description: Only aprentis_dev_synthetic is allowed for Aprentis synthetic ADT.
+    default: aprentis_dev_synthetic
   schema:
-    description: This is the schema that will house the data and the required assets
+    description: Schema for Funke HL7 landing, bronze/silver, and ADT gold tables.
     default: hl7
   warehouse_id:
     description: SQL warehouse id backing the bed-utilization dashboard (required; pass --var warehouse_id=<id>)
@@ -31,17 +31,22 @@ variables:
 artifacts:
   lib_funke:
     type: whl
-    build: python3 -m pip install --upgrade build && python3 -m build
+    # Use a local venv so macOS PEP 668 / Homebrew Python can still build the wheel.
+    build: python3 -m venv .venv && .venv/bin/pip install -q build && .venv/bin/python -m build
     dynamic_version: true
 
 targets:
-  dev:
-    # The default target uses 'mode: development' to create a development copy.
-    # - Deployed resources get prefixed with '[dev my_user_name]'
-    # - Any job schedules and triggers are paused by default.
-    # See also https://docs.databricks.com/dev-tools/bundles/deployment-modes.html.
+  # Aprentis default: synthetic catalog only. Development mode prefixes resources.
+  # See also https://docs.databricks.com/dev-tools/bundles/deployment-modes.html.
+  dev_synthetic:
     mode: development
     default: true
+    variables:
+      catalog: aprentis_dev_synthetic
+      schema: hl7
 
   prod:
     mode: production
+    variables:
+      catalog: aprentis_dev_synthetic
+      schema: hl7
